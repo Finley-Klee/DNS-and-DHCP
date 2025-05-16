@@ -51,16 +51,14 @@ Then, I opened the configuration file for dnsmasq in the nano text editor using 
   <img src="https://github.com/user-attachments/assets/22116447-cdf4-4ace-be23-21a5ec0dd23c" height="80%" width="80%" alt="a linux terminal with black background and white text. The command in the top line reads dig example dot com at localhost. The response shows no errors, one query with six answers and then in the bottom answer section lists the A records for example dot com which has 6 IPv4 addresses."/>
   <br />
   <br />
- Then I used the debug logs from dnsmasq to see how dnsmasq handled the query. I used the tail command to print the last few lines of the debug log file to the terminal, and I can see that the local host checked its host file at /etc/hosts for the IP address for example.com and didn't find anything, so it forwarded the request to an external DNS server and received the responses listed in the dnsmasq response.<br />
+ Then I used the debug logs from dnsmasq to see how dnsmasq handled the query. I used the tail command to print the last few lines of the debug log file to the terminal, and I can see that the local host checked its host file at /etc/hosts for the IP address for example.com and didn't find anything, so it forwarded the request to an external DNS server and received the responses listed in the dnsmasq response. This is normal behavior for a caching DNS service.<br />
   <img src="https://github.com/user-attachments/assets/f18a5689-aeb8-445c-9a67-7d5424ee53df" height="80%" width="80%" alt="a linux terminal with black background and white text. The command on the first line reads sudo tail /var/log/dnsmasq.log followed by the last 10 lines of the log file. The log entries have the date, May 2, and time, 18:15:18 to 18:16:52, on the left hand side, then the process, dnsmasq, and the process id, 1270, followed by a colon and then the responses. From top to bottom the responses read using nameserver 169 dot 254 dot 169 dot 254 # 53, read /etc/hosts hyphen 7 addresses, query A example dot com from 127 dot 0 dot 0 dot 1, forwarded example dot com to 169 dot 254 dot 169 dot 254, reply example dot com is 23 dot 192 dot 228 dot 80, reply example dot com is 23 dot 192 dot 228 dot 84, reply example dot com is 23 dot 215 dot 0 dot 136, reply example dot com is 23 dot 215 dot 0 dot 138, reply example dot com is 96 dot 7 dot 128 dot 175, reply example dot com is 96 dot 7 dot 128 dot 198"/>
   <br />
   <br />
-  Step Three: <br />
-  <img src="" height="80%" width="80%" alt="image three"/>
+ I checked the caching ability by running the same query again, and here you can see from the tail of the debug log that this time dnsmasq returned cached addresses for example.com instead of forwarding the request.<br />
+  <img src="https://github.com/user-attachments/assets/8410e0a2-f9e8-420b-a0c4-eb2028bf7920" height="80%" width="80%" alt="a linux terminal with black background and white text. The command in the top line reads dig example dot com at localhost. The response shows no errors, one query with six answers and then in the bottom answer section lists the A records for example dot com which has 6 IPv4 addresses."/>
    <br />
-  <br />
-  Step Four: <br />
-  <img src="" height="80%" width="80%" alt="image four"/>
+  <img src="https://github.com/user-attachments/assets/a82f0eff-c1ea-4b7c-9c04-c7aa7da655d8" height="80%" width="80%" alt="a linux terminal with black background and white text. The command on the first line reads sudo tail /var/log/dnsmasq.log followed by the last 10 lines of the log file. In the last 7 lines the query from the dig command can be seen and this time the 6 responses are appended with cached indicating that the response came from the host file."/>
    <br />
   <br />
   Step Five: <br />
