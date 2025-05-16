@@ -44,15 +44,15 @@ Then, I opened the configuration file for dnsmasq in the nano text editor using 
  Finally, I tested that the syntax of the configuration file was correct, using the --test parameter, and after confirming that it was OK, I started the dnsmasq daemon so that it would read the configuration file again.<br />
   <img src="https://github.com/user-attachments/assets/5cee2a53-6e52-4dd9-a532-40b46902c6d1" height="80%" width="80%" alt="a linux terminal with black background and white text. The first command reads sudo dnsmasq double hyphen test hyphen C /etc/dnsmasq.d/mycompany.conf and the response reads dnsmasq colon syntax check OK. The second command reads sudo service dnsmasq start and the response reads starting DNS forwarder and DHCP server colon dnsmasq."/>
 </p>
-- <b>Section Name</b>
-<p>Description</p>
+- <b>Experimenting with DNS queries</b>
+<p>I observed how dnsmasq handles DNS queries by using the dig command to request the IP address of certain hostnames.</p>
 <br>
-<p align="center">Step One: <br/>
-  <img src="" height="80%" width="80%" alt="image one"/>
+<p align="center">First, I queried dnsmasq for the IP address of example.com and specified that I want to use the running machine as the DNS server by using the @localhost parameter. In the answer section I actually got 6 different responses for A records for the domain name.<br/>
+  <img src="https://github.com/user-attachments/assets/22116447-cdf4-4ace-be23-21a5ec0dd23c" height="80%" width="80%" alt="a linux terminal with black background and white text. The command in the top line reads dig example dot com at localhost. The response shows no errors, one query with six answers and then in the bottom answer section lists the A records for example dot com which has 6 IPv4 addresses."/>
   <br />
   <br />
-  Step Two: <br />
-  <img src="" height="80%" width="80%" alt="image two"/>
+ Then I used the debug logs from dnsmasq to see how dnsmasq handled the query. I used the tail command to print the last few lines of the debug log file to the terminal, and I can see that the local host checked its host file at /etc/hosts for the IP address for example.com and didn't find anything, so it forwarded the request to an external DNS server and received the responses listed in the dnsmasq response.<br />
+  <img src="https://github.com/user-attachments/assets/f18a5689-aeb8-445c-9a67-7d5424ee53df" height="80%" width="80%" alt="a linux terminal with black background and white text. The command on the first line reads sudo tail /var/log/dnsmasq.log followed by the last 10 lines of the log file. The log entries have the date, May 2, and time, 18:15:18 to 18:16:52, on the left hand side, then the process, dnsmasq, and the process id, 1270, followed by a colon and then the responses. From top to bottom the responses read using nameserver 169 dot 254 dot 169 dot 254 # 53, read /etc/hosts hyphen 7 addresses, query A example dot com from 127 dot 0 dot 0 dot 1, forwarded example dot com to 169 dot 254 dot 169 dot 254, reply example dot com is 23 dot 192 dot 228 dot 80, reply example dot com is 23 dot 192 dot 228 dot 84, reply example dot com is 23 dot 215 dot 0 dot 136, reply example dot com is 23 dot 215 dot 0 dot 138, reply example dot com is 96 dot 7 dot 128 dot 175, reply example dot com is 96 dot 7 dot 128 dot 198"/>
   <br />
   <br />
   Step Three: <br />
