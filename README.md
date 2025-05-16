@@ -25,19 +25,25 @@ My task in this lab was to modify the configuration of this dnsmasq setup so tha
   <img src="https://github.com/user-attachments/assets/8f90834f-e302-44cd-8c94-305bc7831da5" height="80%" width="80%" alt="a linux terminal window with black background and white text. The top command reads ip address show eth_srv and the response over the next 5 lines shows information about the network interface, including the ip address. The next command reads ip address show eth_cli and the following 3 lines show information about the client interface, including a mac address but no IPv4 address."/>
   <br />
   <br />
-  Step Two: <br />
-  <img src="" height="80%" width="80%" alt="image two"/>
-  <br />
-  <br />
-  Step Three: <br />
-  <img src="" height="80%" width="80%" alt="image three"/>
-   <br />
-  <br />
-  Step Four: <br />
-  <img src="" height="80%" width="80%" alt="image four"/>
+Next, I used the cat command to print the text of the current dnsmasq configuration file, located at /etc/dnsmasq.d/mycompany.conf, to the terminal so that I could learn what the current settings were. I can see that the interface is defined as eht_srv, and that the bind-interface setting means that dnsmasq will only operate on that interface and ignore any others. I can see that the domain for the network is mycompany.local and that there's additional information in the dhcp-option settings providing clients with the router and the dns server. Lastly, I can see the current range that is being dynamically configured by dhcp as well as the lease time, which is currenlty set to 24 hours.<br />
+  <img src="https://github.com/user-attachments/assets/8b29a386-7595-42ce-8430-32bc0e113f77" height="80%" width="80%" alt="a linux terminal window with black background and white text. The text reads: cat /etc/dnsmasq.d/mycompany.conf This is the interface on which the DCHP server will be listening to. Interface equals eth underscore srv. This tells this dnsmasq to only operate on that interface and not operate on any other interfaces, so that it doesn't interfere with other running dnsmasq processes. bind hyphen interfaces. Domain name that will be sent to the DHCP clients. domain equals my company dot local. Default gateway that will be sent to the DHCP clients. dhcp hyphen option equals option colon router comma 192 dot 168 dot 1 dot 1. DNS servers to announce to the DHCP clients. dhcp hyphen option equals option colon dns hyphen server comma 192 dot 168 dot 1 dot 1. Dynamic range of IPs to use for DHCP and the lease time. dhcp hyphen range equals 192 dot 168 dot 1 dot 2 comma 192 dot 168 dot 1 dot 254 comma 24 h."/>
 </p>
 <br />
 <br />
+- <b>Enabling Debug Logging</b>
+<p>In order to better understand what is going on and why as I make changes to the configuration, I enabled debug logging.</p>
+<br>
+<p align="center">First, I queried the status of the dnsmasq service using the command sudo service dnsmasq status. I can see that the service is currently running.<br/>
+  <img src="https://github.com/user-attachments/assets/6209e2e9-4362-42b3-92b2-7cc7065d41dc" height="80%" width="80%" alt="a linux terminal window with black background and white text. The first line has the command sudo service dnsmasq status. The response reads checking DNS forwarder and DHCP server colon dnsmasq running. Running is in parentheses."/>
+  <br />
+  <br />
+Then, I opened the configuration file for dnsmasq in the nano text editor using the command sudo nano followed by the file path for the configuration file. I edited the file to add the option to log queries, and directed the service where to store the log file.<br />
+  <img src="https://github.com/user-attachments/assets/0f177d52-74c2-4a93-94f9-d79b1d1bef78" height="80%" width="80%" alt="A nano text editor window with black background and white text. The text of the configuration file is the same as was described in the network set up and current configuration section with the exception of the last two lines which read: log hyphen queries and log hyphen facility equals /var/log/dnsmasq.log"/>
+  <br />
+  <br />
+ Finally, I tested that the syntax of the configuration file was correct, using the --test parameter, and after confirming that it was OK, I started the dnsmasq daemon so that it would read the configuration file again.<br />
+  <img src="https://github.com/user-attachments/assets/5cee2a53-6e52-4dd9-a532-40b46902c6d1" height="80%" width="80%" alt="a linux terminal with black background and white text. The first command reads sudo dnsmasq double hyphen test hyphen C /etc/dnsmasq.d/mycompany.conf and the response reads dnsmasq colon syntax check OK. The second command reads sudo service dnsmasq start and the response reads starting DNS forwarder and DHCP server colon dnsmasq."/>
+</p>
 - <b>Section Name</b>
 <p>Description</p>
 <br>
