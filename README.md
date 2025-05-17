@@ -10,7 +10,8 @@ My task in this lab was to modify the configuration of this dnsmasq setup so tha
 
 <h2>Utilities Used</h2>
 
-- <b>dnsmasq </b> 
+- <b>dnsmasq </b>
+- <b>dhclient </b> 
 
 <h2>Environments Used </h2>
 
@@ -30,6 +31,7 @@ Next, I used the cat command to print the text of the current dnsmasq configurat
 </p>
 <br />
 <br />
+
 - <b>Enabling Debug Logging</b>
 <p>In order to better understand what is going on and why as I make changes to the configuration, I enabled debug logging.</p>
 <br>
@@ -44,6 +46,7 @@ Then, I opened the configuration file for dnsmasq in the nano text editor using 
  Finally, I tested that the syntax of the configuration file was correct, using the --test parameter, and after confirming that it was OK, I started the dnsmasq daemon so that it would read the configuration file again.<br />
   <img src="https://github.com/user-attachments/assets/5cee2a53-6e52-4dd9-a532-40b46902c6d1" height="80%" width="80%" alt="a linux terminal with black background and white text. The first command reads sudo dnsmasq double hyphen test hyphen C /etc/dnsmasq.d/mycompany.conf and the response reads dnsmasq colon syntax check OK. The second command reads sudo service dnsmasq start and the response reads starting DNS forwarder and DHCP server colon dnsmasq."/>
 </p>
+
 - <b>Experimenting with DNS queries</b>
 <p>I observed how dnsmasq handles DNS queries by using the dig command to request the IP address of certain hostnames.</p>
 <br>
@@ -59,6 +62,50 @@ Then, I opened the configuration file for dnsmasq in the nano text editor using 
   <img src="https://github.com/user-attachments/assets/8410e0a2-f9e8-420b-a0c4-eb2028bf7920" height="80%" width="80%" alt="a linux terminal with black background and white text. The command in the top line reads dig example dot com at localhost. The response shows no errors, one query with six answers and then in the bottom answer section lists the A records for example dot com which has 6 IPv4 addresses."/>
    <br />
   <img src="https://github.com/user-attachments/assets/a82f0eff-c1ea-4b7c-9c04-c7aa7da655d8" height="80%" width="80%" alt="a linux terminal with black background and white text. The command on the first line reads sudo tail /var/log/dnsmasq.log followed by the last 10 lines of the log file. In the last 7 lines the query from the dig command can be seen and this time the 6 responses are appended with cached indicating that the response came from the host file."/>
+   <br />
+  <br />
+  I also explored what would happen if I queried for a domain name that doesn't exist. I used the dig command again, this time with the domain example.local. I can see from the response that I get a warning that .local is reserved for multicast DNS and I see that my 1 query received 0 answers. I can further explore this scenario by once again examining the debug log with tail. I see in the last two lines that the query was received and forwarded to the external DNS server and no response was received.<br />
+  <img src="https://github.com/user-attachments/assets/866aa6cb-6fd2-434b-aa44-39f0cc961071" height="80%" width="80%" alt="a linux terminal with black background and white text. The command in the top line reads dig example dot local at localhost. The response contains a warning which reads dot local is reserved for multicast DNS you are currently testing what happens when an mDNS query is leaked to DNS. Bellow the dig response is the command sudo tail /var/log/dnsmasq.log and the last two lines of the log show the query of the A record for example dot local and then the forwarding of that response to the external DNS server."/>
+</p>
+
+- <b>Experimenting with a DHCP Client</b>
+<p>To better understand how the DHCP configuration is working, I ran dhclient on the eht_cli network interface.</p>
+<br>
+<p align="center">I ran the DHCP client using verbose mode so that I could see the response and using a debugging script (the -sf flag) so that I could see what information was received from the server instead of modifying the network settings of the machine. I can see in the verbose response how the DHCP server heard the client's request for an IP address, offered the IP address of <br/>
+  <img src="https://github.com/user-attachments/assets/f08ec04a-0c33-44db-8015-fd2b40440968" height="80%" width="80%" alt="image one"/>
+  <br />
+  <br />
+  Step Two: <br />
+  <img src="" height="80%" width="80%" alt="image two"/>
+  <br />
+  <br />
+  Step Three: <br />
+  <img src="" height="80%" width="80%" alt="image three"/>
+   <br />
+  <br />
+  Step Four: <br />
+  <img src="" height="80%" width="80%" alt="image four"/>
+</p>
+<br />
+<br />
+
+- <b>Section Name</b>
+<p>Description</p>
+<br>
+<p align="center">Step One: <br/>
+  <img src="" height="80%" width="80%" alt="image one"/>
+  <br />
+  <br />
+  Step Two: <br />
+  <img src="" height="80%" width="80%" alt="image two"/>
+  <br />
+  <br />
+  Step Three: <br />
+  <img src="" height="80%" width="80%" alt="image three"/>
+   <br />
+  <br />
+  Step Four: <br />
+  <img src="" height="80%" width="80%" alt="image four"/>
    <br />
   <br />
   Step Five: <br />
