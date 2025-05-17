@@ -11,7 +11,8 @@ My task in this lab was to modify the configuration of this dnsmasq setup so tha
 <h2>Utilities Used</h2>
 
 - <b>dnsmasq </b>
-- <b>dhclient </b> 
+- <b>dhclient </b>
+- <b>nano </b>
 
 <h2>Environments Used </h2>
 
@@ -71,44 +72,35 @@ Then, I opened the configuration file for dnsmasq in the nano text editor using 
 - <b>Experimenting with a DHCP Client</b>
 <p>To better understand how the DHCP configuration is working, I ran dhclient on the eht_cli network interface.</p>
 <br>
-<p align="center">I ran the DHCP client using verbose mode so that I could see the response and using a debugging script (the -sf flag) so that I could see what information was received from the server instead of modifying the network settings of the machine. I can see in the verbose response how the DHCP server heard the client's request for an IP address, offered the IP address of <br/>
-  <img src="https://github.com/user-attachments/assets/f08ec04a-0c33-44db-8015-fd2b40440968" height="80%" width="80%" alt="image one"/>
+<p align="center">I ran the DHCP client using verbose mode so that I could see the response and using a debugging script (the -sf flag) so that I could see what information was received from the server instead of modifying the network settings of the machine. I can see in the verbose response how the DHCP server discovered the client, offered the IP address of 192.168.1.148, which was then requested and acknowledged. So now that IP address is bound to the client for 33331 seconds (approximately 9 hours and 26 minutes)<br/>
+  <img src="https://github.com/user-attachments/assets/f08ec04a-0c33-44db-8015-fd2b40440968" height="80%" width="80%" alt="linux terminal with a black background and white text. The command in the first line reads sudo dhclient hyphen i eth underscore cli hyphen v hyphen sf /root/debug_dhcp.sh and the response starts with the copyright from internet systems consortium, then follows with the back and forth of the client and server exchanging the ip address information and then the variables received including the host name and ip address, and lastly a line showing that the ip address is bound to the client and when the address renewal will happen."/>
   <br />
   <br />
-  Step Two: <br />
-  <img src="" height="80%" width="80%" alt="image two"/>
-  <br />
-  <br />
-  Step Three: <br />
-  <img src="" height="80%" width="80%" alt="image three"/>
-   <br />
-  <br />
-  Step Four: <br />
-  <img src="" height="80%" width="80%" alt="image four"/>
+  I also checked the debug file dnsmasq and was able to see that the options set in the configuration file were correctly sent to the client. <br />
+  <img src="https://github.com/user-attachments/assets/2f8723a2-a47c-4b15-a29e-53e705e68845" height="80%" width="80%" alt="linux terminal with a black background and white text. The last 5 lines of the debug log file show the dhcp discover on the eth serv followed by the client's mac address, then the offer of the ip address from the server to the client mac address, followed by the request to the server and then the acknowledgement."/>
 </p>
 <br />
 <br />
 
-- <b>Section Name</b>
-<p>Description</p>
+- <b>Changing the Configuration</b>
+<p>For the last step of this lab, after exploring how the DNS and DHCP services are currently set up, I made changes to the configuration file to assign fixed IP addresses to the new servers, leave space to add more servers in the future, and update the dynamic range accordingly.</p>
 <br>
-<p align="center">Step One: <br/>
-  <img src="" height="80%" width="80%" alt="image one"/>
+<p align="center">Before editing the configuration file, I first stopped the dnsmasq service, then opened the file with the nano text editor. The company wants to add 3 new servers, so I added new dhcp hosts (boxed in green) with their mac address and the fixed IP address intended for them to the configuration file between the assignment of the dynamic range and the debug log options. I also reduced the dynamic IP range to begin at 20 instead of 2 and shortened the lease time from 24 hours to 6 hours (boxed in blue).<br/>
+  <img src="https://github.com/user-attachments/assets/3a6efb93-793b-4048-a684-bad8c2da0cad" height="80%" width="80%" alt="linux terminal with black background and white text. The top command reads sudo service dnsmasq stop. The response reads stopping DNS forwarder and DHCP server colon dnsmasq. The second command reads sudo nano /etc/dnsmasq.d/mycompany.conf"/>
+  <br />
+  <img src="https://github.com/user-attachments/assets/173a5ad3-5adf-453e-b655-942e79076ea3" height="80%" width="80%" alt="a nano text editor window with a black background and white text. The configuration file is shown and has changes highlighted by a blue rectangle and a green rectangle. The blue rectangle surrounds the line which reads dhcp hyphen range equals 192 dot 168 dot 1 dot 20 comma 192 dot 168 dot 1 dot 254 comma 6 H. The green rectangle surrounds three lines, each of which follow the format dhcp hyphen host equals then the mac address, each of which start with aa colon bb colon cc colon dd colon ee and differ only in the last two places, which are, from top to bottom, b2, c3, and d4. then there is a comma and the ip address for each server. the ip addresses all start with 192 dot 168 dot 1 and then from top to bottom the last digits are 2, 3, and 4."/>
   <br />
   <br />
-  Step Two: <br />
-  <img src="" height="80%" width="80%" alt="image two"/>
-  <br />
-  <br />
-  Step Three: <br />
-  <img src="" height="80%" width="80%" alt="image three"/>
+Then I verified the configuration file syntax by running the test, and since I got no errors I started the dnsmasq service again.<br />
+  <img src="https://github.com/user-attachments/assets/31b8834a-33d2-4f89-a662-99ac548f3aae" height="80%" width="80%" alt="linux terminal with black background and white text. The first command reads sudo dnsmasq hyphen hyphen test hyphen c /etc/dnsmasq.d/mycompany.conf. The response reads dnsmasq colon syntax check OK. The second command reads sudo service dnsmasq start and the response reads starting DNS forwarder and DHCP server colon dnsmasq."/>
    <br />
   <br />
-  Step Four: <br />
-  <img src="" height="80%" width="80%" alt="image four"/>
+To test the change of the configuration, I changed the MAC address for the virtual network interface to one of the addresses specified in the configuration file, then I used dhclient again to get the IP address for the client, and I can see that it has the IP address specified in the configuration file for the matching MAC address.<br />
+  <img src="https://github.com/user-attachments/assets/7655dbcf-a3c1-473d-a6e0-ae6ed4c0a1f4" height="80%" width="80%" alt="linux terminal with black background and white text. The top command reads sudo ip link set eth underscore cli address aa colon bb colon cc colon dd colon ee colon c3. The next command reads sudo ip address show eth underscore cli. The response reads eth underscore clie at eth underscore srv colon broadcast comma multicast comma up comma lower underscore up mtu 1500 qdisc noqueue state up group default qlen 1000 link/ether aa colon bb colon cc colon dd colon ee colon c3 brd ff colon ff colon ff colon ff colon ff colon ff"/>
+   <br />
+  <img src="https://github.com/user-attachments/assets/2e072afe-afc5-4ffc-b947-b9c33e68a958" height="80%" width="80%" alt="linux terminal with black background and white text. The command at the top reads sudo dhclient hyphen i eth underscore cli hyphen v hyphen sf /root/debug_dhcp.sh. The response starts with a copyright from internet systems consortium followed by the listening and sending interfaces with the MAC address for the client aa colon bb colon cc colon dd colon ee colon c3, then two DHCP requests for the ip address from the previous assignment, followed by a dhcp discover of the client, which is then offered the ip address 192 dot 168 dot 1 dot 3, that exchange is documented and then the variables exchanged are listed ending with the ip address bound and renewal in 8244 seconds."/>
    <br />
   <br />
-  Step Five: <br />
-  <img src="" height="80%" width="80%" alt="image five"/>
+Finally, I checked the dnsmasq debug logs to see that the client tried to request the previous IP address, but the DHCP server checked the configuration file and the MAC address had a fixed IP address in the configuration, it did not assign the old IP address, then through a DHCP discover the process of binding the fixed IP address took place.<br />
+  <img src="https://github.com/user-attachments/assets/354d8046-1315-4a6f-9fd3-3722d8b7b469" height="80%" width="80%" alt="linux terminal with black background and white text. The top line has the command sudo tail /var/log/dnsmasq.log and the dhcp requests are shown in the lines of the log."/>
 </p>
-
