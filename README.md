@@ -37,7 +37,7 @@ Next, I used the cat command to print the text of the current dnsmasq configurat
 <p>In order to better understand what is going on and why as I make changes to the configuration, I enabled debug logging.</p>
 <br>
 <p align="center">First, I queried the status of the dnsmasq service using the command sudo service dnsmasq status. I can see that the service is currently running.<br/>
-  <img src="https://github.com/user-attachments/assets/6209e2e9-4362-42b3-92b2-7cc7065d41dc" width="80%" alt="a linux terminal window with black background and white text. The first line has the command sudo service dnsmasq status. The response reads checking DNS forwarder and DHCP server colon dnsmasq running. Running is in parentheses."/>
+  <img src="https://github.com/user-attachments/assets/6209e2e9-4362-42b3-92b2-7cc7065d41dc"" width="80%" alt="a linux terminal window with black background and white text. The first line has the command sudo service dnsmasq status. The response reads checking DNS forwarder and DHCP server colon dnsmasq running. Running is in parentheses."/>
   <br />
   <br />
 Then, I opened the configuration file for dnsmasq in the nano text editor using the command sudo nano followed by the file path for the configuration file. I edited the file to add the option to log queries, and directed the service where to store the log file.<br />
